@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แชทคุยกัน</title>
     <style>
-        /* Styles ที่ใช้ในไฟล์ HTML */
         * {
             margin: 0;
             padding: 0;
@@ -14,22 +13,56 @@
         }
 
         body {
-            background-color: #f3f4f6;
+            background-color: #f7f9fc;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            font-size: 16px;
         }
 
-        /* Header Style */
+        /* เมนูนำทาง */
+        nav {
+            background-color: #333;
+            width: 100%;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        nav ul li a:hover {
+            color: #ff6b6b;
+        }
+
         header {
             text-align: center;
-            background-color: #007bff;
+            background-color: #006fbb;
             color: white;
             padding: 20px;
             width: 100%;
+            margin-top: 60px;
+            border-bottom: 2px solid #ddd;
         }
 
         header h1 {
@@ -41,11 +74,11 @@
             width: 350px;
             max-width: 100%;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .chat-box {
@@ -55,10 +88,12 @@
             height: 400px;
             background-color: #f9f9f9;
             border-bottom: 2px solid #ddd;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
         }
 
         .input-area {
-            padding: 10px;
+            padding: 15px;
             display: flex;
             align-items: center;
             background-color: #fff;
@@ -69,22 +104,23 @@
             width: 80%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 20px;
+            border-radius: 30px;
             margin-right: 10px;
             font-size: 14px;
         }
 
         #send-btn {
-            background-color: #007bff;
+            background-color: #006fbb;
             color: white;
             border: none;
             padding: 10px;
             border-radius: 50%;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         #send-btn:hover {
-            background-color: #0056b3;
+            background-color: #005bb5;
         }
 
         .sticker {
@@ -96,12 +132,12 @@
         .sticker-picker {
             display: none;
             position: absolute;
-            bottom: 70px;
+            bottom: 80px;
             left: 10px;
             background-color: #fff;
             padding: 5px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             z-index: 10;
         }
 
@@ -124,21 +160,21 @@
 
         .message img {
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             margin-right: 10px;
         }
 
         .message-content {
             background-color: #e0f7fa;
-            padding: 10px;
+            padding: 12px;
             border-radius: 15px;
             max-width: 80%;
             font-size: 14px;
         }
 
         .message-content.user {
-            background-color: #e8f5e9;
+            background-color: #d0f2c6;
             margin-left: auto;
         }
 
@@ -149,9 +185,30 @@
         .message.user {
             justify-content: flex-end;
         }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        footer p {
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
+    <!-- เมนูนำทาง -->
+    <nav>
+        <ul>
+            <li><a href="game.html">เว็บเกม</a></li>
+            <li><a href="id_trade.html">ซื้อขายไอดีเกม</a></li>
+            <li><a href="chatbot_service.html">Chatbot</a></li>
+            <li><a href="trader_website.html">เว็บเทรดเดอร์</a></li>
+        </ul>
+    </nav>
+
     <header>
         <h1>ยินดีต้อนรับสู่เว็บไซต์ของเรา</h1>
         พูดคุยที่นี่
