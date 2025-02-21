@@ -6,64 +6,7 @@
     <title>เว็บเทรด Forex</title>
     <style>
 
-   /* ปุ่มแอบซ่อน */
-   #chatButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
 
-        /* ฟังก์ชันแชท */
-        #chatBox {
-            display: none; /* ซ่อนแชทกล่องตอนแรก */
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            width: 300px;
-            height: 400px;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* กล่องแสดงข้อความ */
-        #messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            border-bottom: 1px solid #ccc;
-            padding: 5px;
-        }
-
-        /* เพิ่มพื้นที่สำหรับแชท */
-        #chatBox textarea {
-            width: 100%;
-            height: 40px;
-            resize: none;
-            margin-bottom: 10px;
-        }
-
-        /* ปุ่มส่งข้อความ */
-        #sendButton {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
 
         /* เพิ่มพื้นหลังแบบ Gradient */
         body, html {
@@ -388,21 +331,6 @@ select option:hover {
 </head>
 
 <body>
-    <!-- ปุ่มแอบข้างๆ -->
-    <button id="chatButton" onclick="toggleChat()">💬</button>
-
-    <!-- ฟังก์ชันแชท -->
-    <div id="chatBox">
-        <!-- ช่องแสดงข้อความ -->
-        <div id="messages"></div>
-
-        <!-- ช่องพิมพ์ข้อความ -->
-        <textarea id="chatInput" placeholder="พิมพ์ข้อความที่นี่..." onkeydown="checkEnter(event)"></textarea>
-
-        <!-- ปุ่มส่งข้อความ -->
-        <button id="sendButton" onclick="sendMessage()">ส่ง</button>
-    </div>
-
     <nav>
         <ul>
             <li><a href="game.html">เว็บเกม</a></li>
@@ -485,34 +413,6 @@ select option:hover {
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-          // ฟังก์ชันแสดง/ซ่อนแชท
-        function toggleChat() {
-            var chatBox = document.getElementById('chatBox');
-            if (chatBox.style.display === 'none' || chatBox.style.display === '') {
-                chatBox.style.display = 'flex'; // แสดงแชท
-            } else {
-                chatBox.style.display = 'none'; // ซ่อนแชท
-            }
-        }
-
-        // ฟังก์ชันส่งข้อความ
-        function sendMessage() {
-            var input = document.getElementById('chatInput');
-            var messages = document.getElementById('messages');
-            var newMessage = document.createElement('div');
-            newMessage.textContent = input.value;
-            messages.appendChild(newMessage);
-            input.value = ''; // เคลียร์ช่องข้อความ
-            messages.scrollTop = messages.scrollHeight; // เลื่อนข้อความล่าสุด
-        }
-
-        // ฟังก์ชันเช็คการกด Enter
-        function checkEnter(event) {
-            if (event.key === 'Enter' && !event.shiftKey) { // ตรวจสอบกด Enter (ไม่ใช่ Shift + Enter)
-                event.preventDefault();
-                sendMessage();
-            }
-        }
         let widgets = [];
 
         function createWidget(containerId, symbol) {
