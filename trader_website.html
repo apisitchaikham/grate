@@ -3,29 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้า Home</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>ยินดีต้อนรับสู่เว็บไซต์ของเรา</h1>
-        เว็ปเทดเดอร์
-    </header>
+    <title>เว็บเทรด Forex</title>
+    <style>
+        /* ปรับแต่งฟอนต์และสีพื้นหลัง */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        header p {
+            font-size: 18px;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        nav {
+            background-color: #34495e;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #ecf0f1;
+        }
+
+        /* การจัดวางกราฟ */
+        .chart-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            flex: 1;
+            min-width: 30%;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        /* ปรับขนาดกราฟในหน้าจอเล็ก */
+        @media (max-width: 768px) {
+            .chart-container {
+                min-width: 48%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chart-container {
+                min-width: 100%;
+            }
+        }
+
+        /* ปรับสไตล์ Dropdown */
+        label, select {
+            display: block;
+            font-size: 16px;
+            margin: 20px 0 10px;
+            color: #333;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        select:focus {
+            border-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- เมนูนำทาง -->
     <nav>
         <ul>
-            <li><a href="index.html">HOME</a></li>
             <li><a href="game.html">เว็บเกม</a></li>
             <li><a href="id_trade.html">ซื้อขายไอดีเกม</a></li>
-            <li><a href="chatbot_service.html">Chatbot บริการ AI</a></li>
+            <li><a href="chatbot_service.html">Chatbot </a></li>
             <li><a href="trader_website.html">เว็บเทรดเดอร์</a></li>
         </ul>
     </nav>
 
+    <!-- ส่วนหัวของเว็บ -->
+    <header>
+        <h1>เว็บเทรดเดอร์ Forex</h1>
+        <p>วิเคราะห์กราฟ ฟีดข่าว และสัญญาณการซื้อขาย</p>
+    </header>
+
+    <main>
+        <section class="chart-container">
+            <h2>กราฟราคา Forex</h2>
+            <!-- แสดงกราฟ 3 คู่เงินต่อบรรทัด -->
+            <div class="chart-row">
+                <div class="chart-container" id="chart1"></div>
+                <div class="chart-container" id="chart2"></div>
+                <div class="chart-container" id="chart3"></div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-container" id="chart4"></div>
+                <div class="chart-container" id="chart5"></div>
+                <div class="chart-container" id="chart6"></div>
+            </div>
+
+            <!-- Dropdown สำหรับเลือกคู่เงิน -->
+            <label for="currencyPair">เลือกคู่สกุลเงิน:</label>
+            <select id="currencyPair">
+                <option value="XAUUSD">XAU/USD (ทองคำ)</option>
+                <option value="EURUSD">EUR/USD</option>
+                <option value="GBPUSD">GBP/USD</option>
+                <option value="USDJPY">USD/JPY</option>
+                <option value="USDCAD">USD/CAD</option>
+                <option value="AUDUSD">AUD/USD</option>
+            </select>
+        </section>
+    </main>
+
+    <!-- ส่วนท้ายของเว็บ -->
     <footer>
-        <p>&copy; 2025 เว็บของเรา</p>
+        <p>&copy; 2025 เว็บเทรดเดอร์ Forex | พัฒนาโดยทีมงานมืออาชีพ</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let widgets = [];
+
+        // ฟังก์ชันสร้างกราฟ TradingView Widget
+        function createWidget(containerId, symbol) {
+            const widget = new TradingView.widget({
+                container_id: containerId,
+                autosize: true,
+                symbol: symbol,
+                interval: "D",
+                timezone: "Asia/Bangkok",
+                theme: "dark",
+                style: "1",
+                toolbar_bg: "#f1f3f6",
+                hide_top_toolbar: false,
+                hide_legend: false,
+                save_image: false,
+            });
+            return widget;
+        }
+
+        // สร้างกราฟเริ่มต้นสำหรับคู่เงินต่างๆ
+        widgets.push(createWidget("chart1", "XAUUSD"));
+        widgets.push(createWidget("chart2", "EURUSD"));
+        widgets.push(createWidget("chart3", "GBPUSD"));
+        widgets.push(createWidget("chart4", "USDJPY"));
+        widgets.push(createWidget("chart5", "USDCAD"));
+        widgets.push(createWidget("chart6", "AUDUSD"));
+
+        // เปลี่ยนกราฟตามที่เลือกใน Dropdown
+        document.getElementById("currencyPair").addEventListener("change", (event) => {
+            const selectedSymbol = event.target.value;
+            widgets.forEach((widget, index) => {
+                widget.setSymbol(selectedSymbol); // เปลี่ยนกราฟทั้งหมดให้แสดงคู่เงินที่เลือก
+            });
+        });
+    </script>
 </body>
 </html>
