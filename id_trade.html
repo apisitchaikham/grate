@@ -3,13 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้า Home</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ซื้อขายไอดีเกม</title>
+    <style>
+        /* ตั้งค่าเบื้องต้น */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* Navigation Menu */
+        nav ul {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            list-style-type: none;
+            padding: 10px 0;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            background-color: #4CAF50;
+        }
+
+        /* Section for the items on trade */
+        .trade-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* จัดตำแหน่งให้ทุกอย่างอยู่กลาง */
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .trade-container h2 {
+            text-align: center; /* จัดตำแหน่งหัวข้อให้กลาง */
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Slider for Items */
+        .trade-slider {
+            display: flex;
+            overflow-x: auto; /* ให้เลื่อนในแนวนอน */
+            gap: 20px;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .trade-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .trade-slider::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        .trade-slider::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        /* Card Style for Trade Items */
+        .trade-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            flex-shrink: 0; /* ให้แต่ละการ์ดมีขนาดคงที่ */
+        }
+
+        .trade-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .trade-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .trade-card p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .trade-card button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .trade-card button:hover {
+            background-color: #45a049;
+        }
+
+        /* Arrows for Sliding */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #4CAF50;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .slider-arrow-left {
+            left: 10px;
+        }
+
+        .slider-arrow-right {
+            right: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>ยินดีต้อนรับสู่เว็บไซต์ของเรา</h1>
-        ซื้อขายID
+        ซื้อขายไอดีเกม
     </header>
 
     <nav>
@@ -17,15 +183,72 @@
             <li><a href="index.html">HOME</a></li>
             <li><a href="game.html">เว็บเกม</a></li>
             <li><a href="id_trade.html">ซื้อขายไอดีเกม</a></li>
-            <li><a href="chatbot_service.html">Chatbot บริการ AI</a></li>
+            <li><a href="chatbot_service.html">Chatbot </a></li>
             <li><a href="trader_website.html">เว็บเทรดเดอร์</a></li>
         </ul>
     </nav>
+
+    <div class="trade-container">
+        <h2>สินค้าที่เปิดขาย</h2>
+        <div class="trade-slider">
+            <div class="trade-card">
+                <img src="game_id1.jpg" alt="Game ID 1">
+                <h3>ไอดีเกม A</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม A ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id2.jpg" alt="Game ID 2">
+                <h3>ไอดีเกม B</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม B ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id3.jpg" alt="Game ID 3">
+                <h3>ไอดีเกม C</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม C ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id4.jpg" alt="Game ID 4">
+                <h3>ไอดีเกม D</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม D ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id5.jpg" alt="Game ID 5">
+                <h3>ไอดีเกม E</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม E ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id6.jpg" alt="Game ID 6">
+                <h3>ไอดีเกม F</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม F ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+            <div class="trade-card">
+                <img src="game_id7.jpg" alt="Game ID 7">
+                <h3>ไอดีเกม G</h3>
+                <p>รายละเอียดเกี่ยวกับไอดีเกม G ที่นี่...</p>
+                <button>ซื้อทันที</button>
+            </div>
+        </div>
+        <span class="slider-arrow slider-arrow-left" onclick="scrollSlider(-1)">&#8592;</span>
+        <span class="slider-arrow slider-arrow-right" onclick="scrollSlider(1)">&#8594;</span>
+    </div>
 
     <footer>
         <p>&copy; 2025 เว็บของเรา</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // ฟังก์ชันเลื่อนสินค้าไปทางซ้ายหรือขวา
+        function scrollSlider(direction) {
+            const slider = document.querySelector('.trade-slider');
+            const scrollAmount = 300; // จำนวนการเลื่อนในแต่ละครั้ง
+            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
