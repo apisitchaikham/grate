@@ -61,12 +61,10 @@ function loadMessages(messagesRef) {
             <img src="${message.user.avatar}" alt="${message.user.name}" />
             <span>${message.user.name}: ${message.text}</span>
         `;
-
-        // เพิ่ม Event Listener ให้กับข้อความ
-        messageElement.addEventListener('click', () => showUserModal(message.user));
-
         messagesList.appendChild(messageElement);
-        window.scrollTo(0, document.body.scrollHeight);
+
+        // เลื่อนไปยังข้อความล่าสุด
+        messagesList.scrollTop = messagesList.scrollHeight;
     });
 }
 
