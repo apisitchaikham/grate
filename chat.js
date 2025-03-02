@@ -16,10 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// อ้างอิงถึงตำแหน่งใน Realtime Database
-const publicMessagesRef = ref(database, 'public-messages');
-const usersRef = ref(database, 'users');
-const privateChatsRef = ref(database, 'private-chats');
+;
 
 // ข้อมูลผู้ใช้ปัจจุบัน
 let currentUser = {
@@ -27,8 +24,15 @@ let currentUser = {
     name: `User${Math.floor(Math.random() * 1000)}`,
     avatar: `https://i.pravatar.cc/150?u=${generateUserId()}`
 };
+
+// ประกาศตัวแปร currentRoom และ privateMessagesRef ในสโคป global
 let currentRoom = 'public'; // กำหนดค่าเริ่มต้นเป็นห้องแชทสาธารณะ
-let privateMessagesRef = null; // ประกาศตัวแปรในสโคป global
+let privateMessagesRef = null; // ประกาศตัวแปร privateMessagesRef
+
+// อ้างอิงถึงตำแหน่งใน Realtime Database
+const publicMessagesRef = ref(database, 'public-messages');
+const usersRef = ref(database, 'users');
+const privateChatsRef = ref(database, 'private-chats');
 
 // สร้าง ID ผู้ใช้
 function generateUserId() {
@@ -57,9 +61,50 @@ function loadMessages(messagesRef) {
             <img src="${message.user.avatar}" alt="${message.user.name}" />
             <span>${message.user.name}: ${message.text}</span>
         `;
+
+        // เพิ่ม Event Listener ให้กับข้อความ
+        messageElement.addEventListener('click', () => showUserModal(message.user));
+
         messagesList.appendChild(messageElement);
         window.scrollTo(0, document.body.scrollHeight);
     });
+}
+
+// แสดง Modal สำหรับการจัดการผู้ใช้
+function showUserModal(user) {
+    const modal = document.getElementById('user-modal');
+    const modalUsername = document.getElementById('modal-username');
+    const addFriendBtn = document.getElementById('add-friend-btn');
+    const blockUserBtn = document.getElementById('block-user-btn');
+    const startPrivateChatBtn = document.getElementById('start-private-chat-btn');
+    const removeFriendBtn = document.getElementById('remove-friend-btn'); // เพิ่มปุ่มลบเพื่อน
+
+    modal.style.display = 'flex';
+    modalUsername.textContent = user.name;
+
+    // เพิ่มเพื่อน
+    addFriendBtn.onclick = () => {
+        alert(`Added ${user.name} as a friend!`);
+        modal.style.display = 'none';
+    };
+
+    // บล็อกผู้ใช้
+    blockUserBtn.onclick = () => {
+        alert(`Blocked ${user.name}!`);
+        modal.style.display = 'none';
+    };
+
+    // เริ่มแชทส่วนตัว
+    startPrivateChatBtn.onclick = () => {
+        startPrivateChat(user);
+        modal.style.display = 'none';
+    };
+
+    // ลบเพื่อน
+    removeFriendBtn.onclick = () => {
+        alert(`Removed ${user.name} from friends!`);
+        modal.style.display = 'none';
+    };
 }
 
 // ส่งข้อความ
@@ -115,25 +160,7 @@ const addFriendBtn = document.getElementById('add-friend-btn');
 const blockUserBtn = document.getElementById('block-user-btn');
 const startPrivateChatBtn = document.getElementById('start-private-chat-btn');
 
-function showUserModal(user) {
-    modal.style.display = 'flex';
-    modalUsername.textContent = user.name;
 
-    addFriendBtn.onclick = () => {
-        alert(`Added ${user.name} as a friend!`);
-        modal.style.display = 'none';
-    };
-
-    blockUserBtn.onclick = () => {
-        alert(`Blocked ${user.name}!`);
-        modal.style.display = 'none';
-    };
-
-    startPrivateChatBtn.onclick = () => {
-        startPrivateChat(user);
-        modal.style.display = 'none';
-    };
-}
 
 // เริ่มแชทส่วนตัว
 function startPrivateChat(user) {
@@ -141,14 +168,61 @@ function startPrivateChat(user) {
     currentRoom = `private-${chatId}`;
     roomName.textContent = `Private Chat with ${user.name}`;
     privateMessagesRef = ref(database, `private-chats/${chatId}`); // กำหนดค่า privateMessagesRef
+
+    // เพิ่มห้องแชทส่วนตัวใน "Chat Rooms"
+    addPrivateChatRoom(user, chatId);
+
     loadMessages(privateMessagesRef);
 }
 
-// ปิด Modal
-const closeModal = document.querySelector('.close');
-closeModal.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
+// เก็บรายการห้องแชทส่วนตัวที่สร้างไว้แล้ว
+const createdPrivateChats = {};
+
+// เพิ่มห้องแชทส่วนตัวใน "Chat Rooms"
+function addPrivateChatRoom(user, chatId) {
+    // ตรวจสอบว่าห้องแชทส่วนตัวมีอยู่แล้วหรือไม่
+    if (createdPrivateChats[chatId]) {
+        return; // ไม่สร้างปุ่มซ้ำ
+    }
+
+    const chatRoomsList = document.getElementById('chat-rooms-list');
+    const chatRoomButton = document.createElement('button'); // สร้างปุ่มแทน <li>
+    chatRoomButton.textContent = `Private Chat with ${user.name}`;
+    chatRoomButton.classList.add('chat-room-btn'); // เพิ่มคลาส CSS
+
+    chatRoomButton.addEventListener('click', () => {
+        currentRoom = `private-${chatId}`;
+        roomName.textContent = `Private Chat with ${user.name}`;
+        privateMessagesRef = ref(database, `private-chats/${chatId}`);
+        loadMessages(privateMessagesRef);
+    });
+
+    chatRoomsList.appendChild(chatRoomButton);
+
+    // บันทึกว่าห้องแชทนี้ถูกสร้างแล้ว
+    createdPrivateChats[chatId] = true;
+}
+
+// โหลดห้องแชทส่วนตัวสำหรับผู้ใช้ปัจจุบัน
+function loadPrivateChatRooms() {
+    const chatRoomsList = document.getElementById('chat-rooms-list');
+    chatRoomsList.innerHTML = ''; // ล้างห้องแชทเก่า
+
+    onValue(privateChatsRef, (snapshot) => {
+        const privateChats = snapshot.val();
+        for (const chatId in privateChats) {
+            const usersInChat = chatId.split('_');
+            if (usersInChat.includes(currentUser.id)) {
+                const otherUserId = usersInChat.find(id => id !== currentUser.id);
+                const otherUserRef = ref(database, `users/${otherUserId}`);
+                onValue(otherUserRef, (userSnapshot) => {
+                    const otherUser = userSnapshot.val();
+                    addPrivateChatRoom(otherUser, chatId);
+                });
+            }
+        }
+    });
+}
 
 // โหลดข้อความเริ่มต้น
 loadMessages(publicMessagesRef);
@@ -158,3 +232,7 @@ set(ref(database, `users/${currentUser.id}`), currentUser);
 
 // ลบผู้ใช้เมื่อปิดเบราว์เซอร์
 onDisconnect(ref(database, `users/${currentUser.id}`)).remove();
+
+// โหลดห้องแชทส่วนตัวเมื่อเริ่มต้น
+loadPrivateChatRooms();
+
