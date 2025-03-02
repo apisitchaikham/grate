@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, set, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,7 +15,58 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-const messagesRef = ref(database, 'messages');
+
+// อ้างอิงถึงตำแหน่งใน Realtime Database
+let currentRoom = 'public';
+const publicMessagesRef = ref(database, 'public-messages');
+const privateMessagesRef = ref(database, 'private-messages');
+const usersRef = ref(database, 'users');
+
+// ข้อมูลผู้ใช้ปัจจุบัน
+let currentUser = {
+    id: generateUserId(),
+    name: `User${Math.floor(Math.random() * 1000)}`,
+    avatar: `https://i.pravatar.cc/150?u=${generateUserId()}`
+};
+
+// สร้าง ID ผู้ใช้
+function generateUserId() {
+    return Math.random().toString(36).substr(2, 9);
+}
+
+// เปลี่ยนห้องแชท
+const publicChatBtn = document.getElementById('public-chat-btn');
+const privateChatBtn = document.getElementById('private-chat-btn');
+const roomName = document.getElementById('room-name');
+
+publicChatBtn.addEventListener('click', () => {
+    currentRoom = 'public';
+    roomName.textContent = 'Public Chat';
+    loadMessages(publicMessagesRef);
+});
+
+privateChatBtn.addEventListener('click', () => {
+    currentRoom = 'private';
+    roomName.textContent = 'Private Chat';
+    loadMessages(privateMessagesRef);
+});
+
+// โหลดข้อความ
+function loadMessages(messagesRef) {
+    const messagesList = document.getElementById('messages');
+    messagesList.innerHTML = ''; // ล้างข้อความเก่า
+
+    onChildAdded(messagesRef, (snapshot) => {
+        const message = snapshot.val();
+        const messageElement = document.createElement('li');
+        messageElement.innerHTML = `
+            <img src="${message.user.avatar}" alt="${message.user.name}" />
+            <span>${message.user.name}: ${message.text}</span>
+        `;
+        messagesList.appendChild(messageElement);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+}
 
 // ส่งข้อความ
 const messageInput = document.getElementById('messageInput');
@@ -36,19 +87,68 @@ messageInput.addEventListener('keypress', (e) => {
 function sendMessage() {
     const message = messageInput.value.trim();
     if (message !== "") {
+        const messagesRef = currentRoom === 'public' ? publicMessagesRef : privateMessagesRef;
         push(messagesRef, {
             text: message,
+            user: currentUser,
             timestamp: new Date().toLocaleString()
         });
         messageInput.value = ""; // ล้างช่อง input
     }
 }
 
-// รับข้อความ
-onChildAdded(messagesRef, (snapshot) => {
-    const message = snapshot.val();
-    const messageElement = document.createElement('li');
-    messageElement.textContent = message.text;
-    document.getElementById('messages').appendChild(messageElement);
-    window.scrollTo(0, document.body.scrollHeight);
+// แสดงผู้ใช้งานออนไลน์
+const onlineUsersList = document.getElementById('online-users');
+onValue(usersRef, (snapshot) => {
+    const users = snapshot.val();
+    onlineUsersList.innerHTML = '';
+    for (const userId in users) {
+        const user = users[userId];
+        const userElement = document.createElement('li');
+        userElement.innerHTML = `
+            <img src="${user.avatar}" alt="${user.name}" />
+            <span>${user.name}</span>
+        `;
+        userElement.addEventListener('click', () => showUserModal(user));
+        onlineUsersList.appendChild(userElement);
+    }
 });
+
+// แสดง Modal สำหรับการจัดการผู้ใช้
+const modal = document.getElementById('user-modal');
+const modalUsername = document.getElementById('modal-username');
+const addFriendBtn = document.getElementById('add-friend-btn');
+const blockUserBtn = document.getElementById('block-user-btn');
+const privateChatUserBtn = document.getElementById('private-chat-user-btn');
+
+function showUserModal(user) {
+    modal.style.display = 'flex';
+    modalUsername.textContent = user.name;
+
+    addFriendBtn.onclick = () => {
+        alert(`Added ${user.name} as a friend!`);
+        modal.style.display = 'none';
+    };
+
+    blockUserBtn.onclick = () => {
+        alert(`Blocked ${user.name}!`);
+        modal.style.display = 'none';
+    };
+
+    privateChatUserBtn.onclick = () => {
+        alert(`Started private chat with ${user.name}!`);
+        modal.style.display = 'none';
+    };
+}
+
+// ปิด Modal
+const closeModal = document.querySelector('.close');
+closeModal.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+// โหลดข้อความเริ่มต้น
+loadMessages(publicMessagesRef);
+
+// เพิ่มผู้ใช้ปัจจุบันลงในฐานข้อมูล
+set(ref(database, `users/${currentUser.id}`), currentUser);
