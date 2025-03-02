@@ -125,19 +125,30 @@ messageInput.addEventListener('keypress', (e) => {
     }
 });
 
+
+let isSending = false; // ตัวแปรตรวจสอบว่าข้อความกำลังถูกส่งหรือไม่
+
 function sendMessage() {
+    if (isSending) return; // หากข้อความกำลังถูกส่งอยู่ ให้ข้ามการส่งซ้ำ
+
     const message = messageInput.value.trim();
     if (message !== "") {
+        isSending = true; // ตั้งค่าการส่งข้อความเป็น true
+
         const messagesRef = currentRoom === 'public' ? publicMessagesRef : privateMessagesRef;
         push(messagesRef, {
             text: message,
             user: currentUser,
             timestamp: new Date().toLocaleString()
+        }).then(() => {
+            messageInput.value = ""; // ล้างช่อง input
+            isSending = false; // ตั้งค่าการส่งข้อความเป็น false
+        }).catch((error) => {
+            console.error("Error sending message: ", error);
+            isSending = false; // ตั้งค่าการส่งข้อความเป็น false หากเกิดข้อผิดพลาด
         });
-        messageInput.value = ""; // ล้างช่อง input
     }
 }
-
 // แสดงผู้ใช้งานออนไลน์
 const onlineUsersList = document.getElementById('online-users');
 onValue(usersRef, (snapshot) => {
