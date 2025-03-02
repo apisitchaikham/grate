@@ -102,45 +102,34 @@ body {
 #chat-rooms-list button:hover {
     background: #1abc9c;
 }
-
+/* กำหนดความสูงของช่องแสดงข้อความ */
 #messages {
-    list-style-type: none;
-    margin: 0;
-    padding: 20px;
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* เพิ่มแท็บเลื่อนเมื่อข้อความเกินความสูง */
+    max-height: 50vh; /* กำหนดความสูงไม่เกิน 80% ของหน้าจอ */
+    padding: 1vh;
     background: #f9f9f9;
+    border-radius: 5px;
+    margin-bottom: 2px;
 }
 
+/* สไตล์สำหรับข้อความ */
 #messages li {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
+    padding: 0.5px 1px;
     background: white;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    max-width: 70%;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    max-width: 98%;
     word-wrap: break-word;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 #messages li img {
-    width: 30px;
-    height: 30px;
+    width: 10%;
+    height: 10%;
     border-radius: 50%;
     margin-right: 10px;
-}
-
-#messages li:nth-child(odd) {
-    background: #1abc9c;
-    color: white;
-    align-self: flex-start;
-}
-
-#messages li:nth-child(even) {
-    background: #3498db;
-    color: white;
-    align-self: flex-end;
 }
 
 #chat-input {
