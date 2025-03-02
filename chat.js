@@ -1,6 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getDatabase, ref, push, onChildAdded, set, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
+
+
+const unreadMessages = {}; // เก็บสถานะข้อความที่ยังไม่ได้อ่าน
+
+
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyChdEz7B1VcQQI1pkSzprxK7O1BnQkxSvg",
@@ -15,8 +21,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-
-;
 
 // ข้อมูลผู้ใช้ปัจจุบัน
 let currentUser = {
@@ -62,12 +66,9 @@ function loadMessages(messagesRef) {
             <span>${message.user.name}: ${message.text}</span>
         `;
 
-        // เพิ่ม Event Listener ให้กับข้อความ
         messageElement.addEventListener('click', () => showUserModal(message.user));
 
         messagesList.appendChild(messageElement);
-
-        // เลื่อนไปยังข้อความล่าสุด
         messagesList.scrollTop = messagesList.scrollHeight;
     });
 }
@@ -125,7 +126,6 @@ messageInput.addEventListener('keypress', (e) => {
     }
 });
 
-
 let isSending = false; // ตัวแปรตรวจสอบว่าข้อความกำลังถูกส่งหรือไม่
 
 function sendMessage() {
@@ -149,6 +149,7 @@ function sendMessage() {
         });
     }
 }
+
 // แสดงผู้ใช้งานออนไลน์
 const onlineUsersList = document.getElementById('online-users');
 onValue(usersRef, (snapshot) => {
@@ -166,34 +167,18 @@ onValue(usersRef, (snapshot) => {
     }
 });
 
-// แสดง Modal สำหรับการจัดการผู้ใช้
-const modal = document.getElementById('user-modal');
-const modalUsername = document.getElementById('modal-username');
-const addFriendBtn = document.getElementById('add-friend-btn');
-const blockUserBtn = document.getElementById('block-user-btn');
-const startPrivateChatBtn = document.getElementById('start-private-chat-btn');
-
-
-
 // เริ่มแชทส่วนตัว
 function startPrivateChat(user) {
     const chatId = [currentUser.id, user.id].sort().join('_');
     currentRoom = `private-${chatId}`;
     roomName.textContent = `Private Chat with ${user.name}`;
-    privateMessagesRef = ref(database, `private-chats/${chatId}`); // กำหนดค่า privateMessagesRef
-
-    // เพิ่มห้องแชทส่วนตัวใน "Chat Rooms"
-    addPrivateChatRoom(user, chatId);
-
+    
+    privateMessagesRef = ref(database, `private-chats/${chatId}`);
     loadMessages(privateMessagesRef);
 }
 
 // เก็บรายการห้องแชทส่วนตัวที่สร้างไว้แล้ว
 const createdPrivateChats = {};
-
-// เพิ่มห้องแชทส่วนตัวใน "Chat Rooms"
-// เก็บสถานะข้อความที่ยังไม่ได้อ่าน
-const unreadMessages = {};
 
 function addPrivateChatRoom(user, chatId) {
     // ตรวจสอบว่าห้องแชทส่วนตัวมีอยู่แล้วหรือไม่
@@ -201,43 +186,20 @@ function addPrivateChatRoom(user, chatId) {
         return; // ไม่สร้างปุ่มซ้ำ
     }
 
+
     const chatRoomsList = document.getElementById('chat-rooms-list');
     const chatRoomButton = document.createElement('button'); // สร้างปุ่มแทน <li>
     chatRoomButton.textContent = `Private Chat with ${user.name}`;
     chatRoomButton.classList.add('chat-room-btn'); // เพิ่มคลาส CSS
-
-    // เพิ่มเครื่องหมาย "!" สีแดงสำหรับข้อความที่ยังไม่ได้อ่าน
-    const unreadBadge = document.createElement('span');
-    unreadBadge.textContent = '!';
-    unreadBadge.style.color = 'red';
-    unreadBadge.style.marginLeft = '10px';
-    unreadBadge.style.display = 'none'; // ซ่อนไว้ก่อน
-    chatRoomButton.appendChild(unreadBadge);
-
-    // ตรวจสอบข้อความที่ยังไม่ได้อ่าน
-    let privateMessagesRef = ref(database, `private-chats/${chatId}`);
-    onChildAdded(privateMessagesRef, (snapshot) => {
-        const message = snapshot.val();
-        if (message.user.id !== currentUser.id && !unreadMessages[chatId]) {
-            unreadMessages[chatId] = true;
-            unreadBadge.style.display = 'inline'; // แสดงเครื่องหมาย "!"
-        }
-    });
 
     chatRoomButton.addEventListener('click', () => {
         currentRoom = `private-${chatId}`;
         roomName.textContent = `Private Chat with ${user.name}`;
         privateMessagesRef = ref(database, `private-chats/${chatId}`);
         loadMessages(privateMessagesRef);
-
-        // ลบเครื่องหมาย "!" เมื่ออ่านข้อความ
-        unreadMessages[chatId] = false;
-        unreadBadge.style.display = 'none';
     });
 
     chatRoomsList.appendChild(chatRoomButton);
-
-    // บันทึกว่าห้องแชทนี้ถูกสร้างแล้ว
     createdPrivateChats[chatId] = true;
 }
 
@@ -273,4 +235,3 @@ onDisconnect(ref(database, `users/${currentUser.id}`)).remove();
 
 // โหลดห้องแชทส่วนตัวเมื่อเริ่มต้น
 loadPrivateChatRooms();
-
