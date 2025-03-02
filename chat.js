@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, set, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, set, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,6 +19,7 @@ const database = getDatabase(app);
 // อ้างอิงถึงตำแหน่งใน Realtime Database
 const publicMessagesRef = ref(database, 'public-messages');
 const usersRef = ref(database, 'users');
+const privateChatsRef = ref(database, 'private-chats');
 
 // ข้อมูลผู้ใช้ปัจจุบัน
 let currentUser = {
@@ -26,18 +27,30 @@ let currentUser = {
     name: `User${Math.floor(Math.random() * 1000)}`,
     avatar: `https://i.pravatar.cc/150?u=${generateUserId()}`
 };
+let currentRoom = 'public'; // กำหนดค่าเริ่มต้นเป็นห้องแชทสาธารณะ
+let privateMessagesRef = null; // ประกาศตัวแปรในสโคป global
 
 // สร้าง ID ผู้ใช้
 function generateUserId() {
     return Math.random().toString(36).substr(2, 9);
 }
 
+// เปลี่ยนห้องแชท
+const publicChatBtn = document.getElementById('public-chat-btn');
+const roomName = document.getElementById('room-name');
+
+publicChatBtn.addEventListener('click', () => {
+    currentRoom = 'public';
+    roomName.textContent = 'Public Chat';
+    loadMessages(publicMessagesRef);
+});
+
 // โหลดข้อความ
-function loadMessages() {
+function loadMessages(messagesRef) {
     const messagesList = document.getElementById('messages');
     messagesList.innerHTML = ''; // ล้างข้อความเก่า
 
-    onChildAdded(publicMessagesRef, (snapshot) => {
+    onChildAdded(messagesRef, (snapshot) => {
         const message = snapshot.val();
         const messageElement = document.createElement('li');
         messageElement.innerHTML = `
@@ -68,7 +81,8 @@ messageInput.addEventListener('keypress', (e) => {
 function sendMessage() {
     const message = messageInput.value.trim();
     if (message !== "") {
-        push(publicMessagesRef, {
+        const messagesRef = currentRoom === 'public' ? publicMessagesRef : privateMessagesRef;
+        push(messagesRef, {
             text: message,
             user: currentUser,
             timestamp: new Date().toLocaleString()
@@ -99,6 +113,7 @@ const modal = document.getElementById('user-modal');
 const modalUsername = document.getElementById('modal-username');
 const addFriendBtn = document.getElementById('add-friend-btn');
 const blockUserBtn = document.getElementById('block-user-btn');
+const startPrivateChatBtn = document.getElementById('start-private-chat-btn');
 
 function showUserModal(user) {
     modal.style.display = 'flex';
@@ -113,6 +128,20 @@ function showUserModal(user) {
         alert(`Blocked ${user.name}!`);
         modal.style.display = 'none';
     };
+
+    startPrivateChatBtn.onclick = () => {
+        startPrivateChat(user);
+        modal.style.display = 'none';
+    };
+}
+
+// เริ่มแชทส่วนตัว
+function startPrivateChat(user) {
+    const chatId = [currentUser.id, user.id].sort().join('_');
+    currentRoom = `private-${chatId}`;
+    roomName.textContent = `Private Chat with ${user.name}`;
+    privateMessagesRef = ref(database, `private-chats/${chatId}`); // กำหนดค่า privateMessagesRef
+    loadMessages(privateMessagesRef);
 }
 
 // ปิด Modal
@@ -122,7 +151,10 @@ closeModal.addEventListener('click', () => {
 });
 
 // โหลดข้อความเริ่มต้น
-loadMessages();
+loadMessages(publicMessagesRef);
 
 // เพิ่มผู้ใช้ปัจจุบันลงในฐานข้อมูล
 set(ref(database, `users/${currentUser.id}`), currentUser);
+
+// ลบผู้ใช้เมื่อปิดเบราว์เซอร์
+onDisconnect(ref(database, `users/${currentUser.id}`)).remove();
