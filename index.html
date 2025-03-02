@@ -1,15 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Firebase Chat</title>
+    <title>Chat App</title>
     <link rel="stylesheet" href="chat.css" />
-    <link rel="icon" href="data:,"> <!-- เพิ่มบรรทัดนี้เพื่อป้องกันข้อผิดพลาด favicon -->
+    <link rel="icon" href="data:,"> <!-- ป้องกันข้อผิดพลาด favicon -->
 </head>
 <body>
-    <div id="chat">
-        <ul id="messages"></ul>
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button id="sendButton">Send</button>
+    <div id="chat-container">
+        <div id="sidebar">
+            <h2>Chat Rooms</h2>
+            <button id="public-chat-btn">Public Chat</button>
+            <button id="private-chat-btn">Private Chat</button>
+            <div id="user-list">
+                <h3>Online Users</h3>
+                <ul id="online-users"></ul>
+            </div>
+        </div>
+        <div id="chat-window">
+            <div id="chat-header">
+                <h2 id="room-name">Public Chat</h2>
+            </div>
+            <ul id="messages"></ul>
+            <div id="chat-input">
+                <input type="text" id="messageInput" placeholder="Type a message..." />
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for user actions -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-username"></h2>
+            <button id="add-friend-btn">Add Friend</button>
+            <button id="block-user-btn">Block User</button>
+            <button id="private-chat-user-btn">Private Chat</button>
+        </div>
     </div>
 
     <script type="module" src="chat.js"></script>
