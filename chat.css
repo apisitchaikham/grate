@@ -86,6 +86,22 @@ body {
     background: #1abc9c;
     color: white;
 }
+/* สไตล์สำหรับปุ่มห้องแชทส่วนตัว */
+#chat-rooms-list button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    background: #34495e;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+}
+
+#chat-rooms-list button:hover {
+    background: #1abc9c;
+}
 
 #messages {
     list-style-type: none;
