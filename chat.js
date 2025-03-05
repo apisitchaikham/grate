@@ -80,10 +80,16 @@ function showUserModal(user) {
     const addFriendBtn = document.getElementById('add-friend-btn');
     const blockUserBtn = document.getElementById('block-user-btn');
     const startPrivateChatBtn = document.getElementById('start-private-chat-btn');
-    const removeFriendBtn = document.getElementById('remove-friend-btn'); // เพิ่มปุ่มลบเพื่อน
-
+    const removeFriendBtn = document.getElementById('remove-friend-btn');
+    const closeModalBtn = document.getElementById('close-modal'); // ปุ่มปิด
+    
     modal.style.display = 'flex';
     modalUsername.textContent = user.name;
+
+    // ฟังก์ชันการปิด Modal
+    closeModalBtn.onclick = () => {
+        modal.style.display = 'none';
+    };
 
     // เพิ่มเพื่อน
     addFriendBtn.onclick = () => {
